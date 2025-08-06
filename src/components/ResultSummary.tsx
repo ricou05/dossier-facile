@@ -182,13 +182,13 @@ export const ResultSummary = ({
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between pt-6 border-t">
-        <Button variant="outline" onClick={onPrevious}>
+      <div className="flex flex-col sm:flex-row gap-4 justify-between pt-6 border-t">
+        <Button variant="outline" onClick={onPrevious} className="order-1 sm:order-1">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Modifier mes documents
         </Button>
         
-        <Button variant="outline" onClick={onRestart}>
+        <Button variant="outline" onClick={onRestart} className="order-2 sm:order-2">
           <RotateCcw className="w-4 h-4 mr-2" />
           Nouvelle simulation
         </Button>
