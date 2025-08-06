@@ -3,7 +3,8 @@ export interface Document {
   label: string;
   description?: string;
   required: boolean;
-  category: 'identity' | 'address' | 'fiscal' | 'activity' | 'hosting' | 'management';
+  category: string;
+  icon?: string;
 }
 
 export interface RegistrationType {
@@ -23,334 +24,412 @@ export interface UserSelection {
 
 export const REGISTRATION_TYPES: RegistrationType[] = [
   {
-    id: 'residence_principale',
-    title: 'Résidence principale',
-    description: 'Vous habitez principalement dans cette commune',
-    icon: '🏠',
+    id: "residence-principale",
+    title: "Résidence principale",
+    description: "Vous habitez dans la commune de façon permanente",
+    icon: "🏠",
     documents: [
       {
-        id: 'identity',
-        label: 'Pièce d\'identité',
-        description: 'Carte d\'identité valide ou périmée depuis moins de 5 ans, ou passeport valide',
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
         required: true,
-        category: 'identity'
+        category: "identity",
+        icon: "🪪"
       },
       {
-        id: 'facture_eau',
-        label: 'Facture d\'eau',
-        description: 'Facture à votre nom, datée de moins de 3 mois',
+        id: "water-bill",
+        label: "Facture d'eau",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "💧"
       },
       {
-        id: 'facture_electricite',
-        label: 'Facture d\'électricité',
-        description: 'Facture à votre nom, datée de moins de 3 mois',
+        id: "electricity-bill",
+        label: "Facture d'électricité",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "⚡"
       },
       {
-        id: 'facture_gaz',
-        label: 'Facture de gaz',
-        description: 'Facture à votre nom, datée de moins de 3 mois',
+        id: "gas-bill",
+        label: "Facture de gaz",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🔥"
       },
       {
-        id: 'facture_telephone',
-        label: 'Facture téléphone fixe',
-        description: 'Facture à votre nom, datée de moins de 3 mois',
+        id: "landline-bill",
+        label: "Facture de téléphone fixe",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "☎️"
       },
       {
-        id: 'facture_internet',
-        label: 'Facture internet',
-        description: 'Facture à votre nom, datée de moins de 3 mois',
+        id: "internet-bill",
+        label: "Facture internet (ADSL/fibre)",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🌐"
       },
       {
-        id: 'quittance_loyer',
-        label: 'Quittance de loyer',
-        description: 'Quittance non manuscrite, datée de moins de 3 mois',
+        id: "rent-receipt",
+        label: "Quittance de loyer",
+        description: "Non manuscrite, à votre nom, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🧾"
       },
       {
-        id: 'contrat_bail',
-        label: 'Contrat de bail',
-        description: 'Si bail de moins d\'un an, joindre une quittance récente',
+        id: "lease-contract",
+        label: "Contrat de bail",
+        description: "Si moins d'un an, joindre une quittance récente",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "📝"
       },
       {
-        id: 'assurance_habitation',
-        label: 'Attestation assurance habitation',
-        description: 'Attestation à votre nom, datée de moins de 3 mois',
+        id: "home-insurance",
+        label: "Attestation assurance habitation",
+        description: "À votre nom, adresse dans la commune, datée de moins de 3 mois",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🛡️"
       },
       {
-        id: 'taxe_habitation',
-        label: 'Taxe d\'habitation ou foncière',
-        description: 'Avis d\'imposition ou attestation du rôle des impôts locaux',
+        id: "property-tax",
+        label: "Avis taxe foncière ou taxe d'habitation",
+        description: "Document officiel prouvant votre domicile",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "📋"
       },
       {
-        id: 'acte_propriete',
-        label: 'Acte de propriété + facture',
-        description: 'Acte de propriété accompagné d\'une facture récente',
+        id: "property-deed",
+        label: "Acte de propriété",
+        description: "Souvent accompagné d'une facture récente",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🏠"
       },
       {
-        id: 'releve_caf',
-        label: 'Relevé CAF',
-        description: 'Relevé de prestations CAF de moins d\'un an',
+        id: "caf-statement",
+        label: "Relevé CAF",
+        description: "Daté de moins d'un an",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "🏦"
       },
       {
-        id: 'avis_imposition',
-        label: 'Avis d\'imposition',
-        description: 'Dernier avis d\'imposition sur le revenu',
+        id: "tax-notice",
+        label: "Avis d'imposition récent",
+        description: "Document fiscal officiel",
         required: false,
-        category: 'address'
+        category: "address",
+        icon: "💼"
       }
     ],
-    minRequiredFromCategory: { address: 1 }
+    minRequiredFromCategory: {
+      address: 1
+    }
   },
   {
-    id: 'residence_secondaire',
-    title: 'Résidence secondaire',
-    description: 'Propriétaire non résident permanent dans la commune',
-    icon: '🏡',
+    id: "residence-secondaire",
+    title: "Résidence secondaire / Contribuable local",
+    description: "Vous êtes propriétaire d'une résidence secondaire ou contribuable local",
+    icon: "🏡",
     documents: [
       {
-        id: 'identity',
-        label: 'Pièce d\'identité',
-        description: 'Carte d\'identité valide ou périmée depuis moins de 5 ans, ou passeport valide',
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
         required: true,
-        category: 'identity'
+        category: "identity",
+        icon: "🪪"
       },
       {
-        id: 'taxe_fonciere_n1',
-        label: 'Taxe foncière année N-1',
-        description: 'Avis de taxe foncière de l\'année précédente',
+        id: "property-tax-n1",
+        label: "Avis de taxe foncière année N-1",
+        description: "Sur la résidence secondaire dans la commune",
         required: false,
-        category: 'fiscal'
+        category: "fiscal",
+        icon: "📋"
       },
       {
-        id: 'taxe_fonciere_n2',
-        label: 'Taxe foncière année N-2',
-        description: 'Avis de taxe foncière d\'il y a deux ans',
+        id: "property-tax-n2",
+        label: "Avis de taxe foncière année N-2",
+        description: "Sur la résidence secondaire dans la commune",
         required: false,
-        category: 'fiscal'
+        category: "fiscal",
+        icon: "📋"
       },
       {
-        id: 'attestation_dgfip',
-        label: 'Attestation DGFIP',
-        description: 'Attestation DGFIP couvrant 2 années consécutives',
+        id: "dgfip-certificate",
+        label: "Attestation DGFIP",
+        description: "Prouvant l'imposition continue sur 2 ans",
         required: false,
-        category: 'fiscal'
+        category: "fiscal",
+        icon: "🏛️"
       }
     ],
-    minRequiredFromCategory: { fiscal: 1 }
+    minRequiredFromCategory: {
+      fiscal: 2
+    }
   },
   {
-    id: 'commercant',
-    title: 'Commerçant/Artisan',
-    description: 'Activité commerciale ou artisanale dans la commune',
-    icon: '🏪',
+    id: "chef-entreprise",
+    title: "Chef d'entreprise / Gérant / Associé dirigeant",
+    description: "Vous dirigez une entreprise dans la commune depuis plus de 2 ans",
+    icon: "🏢",
     documents: [
       {
-        id: 'identity',
-        label: 'Pièce d\'identité',
-        description: 'Carte d\'identité valide ou périmée depuis moins de 5 ans, ou passeport valide',
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
         required: true,
-        category: 'identity'
+        category: "identity",
+        icon: "🪪"
       },
       {
-        id: 'kbis',
-        label: 'Extrait Kbis',
-        description: 'Extrait Kbis de plus de 2 ans d\'ancienneté',
+        id: "kbis",
+        label: "Extrait Kbis",
+        description: "Datant de plus de 2 ans prouvant votre fonction",
         required: false,
-        category: 'activity'
+        category: "activity",
+        icon: "📜"
       },
       {
-        id: 'registre_metiers',
-        label: 'Registre des métiers',
-        description: 'Inscription au registre des métiers de plus de 2 ans',
+        id: "craft-register",
+        label: "Registre des métiers",
+        description: "Immatriculation de plus de 2 ans",
         required: false,
-        category: 'activity'
+        category: "activity",
+        icon: "🔨"
       },
       {
-        id: 'bail_commercial',
-        label: 'Bail commercial',
-        description: 'Bail commercial de plus de 2 ans',
+        id: "commercial-lease",
+        label: "Bail commercial",
+        description: "De plus de 2 ans dans la commune",
         required: false,
-        category: 'activity'
+        category: "activity",
+        icon: "🏪"
       },
       {
-        id: 'cet_n1',
-        label: 'Contribution économique territoriale N-1',
-        description: 'Avis de contribution économique territoriale année précédente',
+        id: "company-statutes",
+        label: "Statuts de société",
+        description: "Mentionnant votre nomination, datés de plus de 2 ans",
         required: false,
-        category: 'fiscal'
+        category: "management",
+        icon: "📝"
       },
       {
-        id: 'cet_n2',
-        label: 'Contribution économique territoriale N-2',
-        description: 'Avis de contribution économique territoriale d\'il y a deux ans',
+        id: "nomination-decision",
+        label: "Décision de nomination",
+        description: "Procès-verbal datant de plus de 2 ans",
         required: false,
-        category: 'fiscal'
+        category: "management",
+        icon: "⚖️"
       },
       {
-        id: 'attestation_dgfip_pro',
-        label: 'Attestation DGFIP professionnelle',
-        description: 'Attestation DGFIP mentionnant 2 ans d\'ancienneté minimum',
+        id: "cfe-n1",
+        label: "Avis CFE année N-1",
+        description: "Contribution économique territoriale",
         required: false,
-        category: 'fiscal'
+        category: "fiscal",
+        icon: "💼"
+      },
+      {
+        id: "cfe-n2",
+        label: "Avis CFE année N-2",
+        description: "Contribution économique territoriale",
+        required: false,
+        category: "fiscal",
+        icon: "💼"
+      },
+      {
+        id: "continuity-attestation",
+        label: "Attestation sur l'honneur",
+        description: "De continuité de fonction sur plus de 2 ans",
+        required: true,
+        category: "management",
+        icon: "✍️"
       }
     ],
-    minRequiredFromCategory: { activity: 1, fiscal: 1 }
+    minRequiredFromCategory: {
+      activity: 1,
+      fiscal: 2
+    }
   },
   {
-    id: 'gerant_sci',
-    title: 'Gérant(e) de SCI',
-    description: 'Gérant d\'une SCI propriétaire dans la commune',
-    icon: '🏢',
+    id: "enfant-heberge",
+    title: "Enfant majeur (-26 ans) hébergé chez ses parents",
+    description: "Vous êtes majeur de moins de 26 ans et hébergé chez vos parents",
+    icon: "👦",
     documents: [
       {
-        id: 'identity',
-        label: 'Pièce d\'identité',
-        description: 'Carte d\'identité valide ou périmée depuis moins de 5 ans, ou passeport valide',
+        id: "identity",
+        label: "Pièce d'identité de l'enfant",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
         required: true,
-        category: 'identity'
+        category: "identity",
+        icon: "🪪"
       },
       {
-        id: 'attestation_gerance',
-        label: 'Attestation sur l\'honneur de gérance',
-        description: 'Attestation sur l\'honneur de gérance ininterrompue de plus de 2 ans',
+        id: "parent-address-proof",
+        label: "Justificatif de domicile du parent",
+        description: "Daté de moins de 3 mois",
         required: true,
-        category: 'management'
+        category: "hosting",
+        icon: "📄"
       },
       {
-        id: 'statuts_sci',
-        label: 'Statuts SCI',
-        description: 'Statuts nommant le gérant avec date de prise de fonction',
-        required: false,
-        category: 'management'
-      },
-      {
-        id: 'decision_nomination',
-        label: 'Décision de nomination',
-        description: 'Décision de nomination ou procès-verbal avec date',
-        required: false,
-        category: 'management'
-      },
-      {
-        id: 'taxe_fonciere_sci_n1',
-        label: 'Taxe foncière SCI année N-1',
-        description: 'Avis de taxe foncière de la SCI année précédente',
-        required: false,
-        category: 'fiscal'
-      },
-      {
-        id: 'taxe_fonciere_sci_n2',
-        label: 'Taxe foncière SCI année N-2',
-        description: 'Avis de taxe foncière de la SCI d\'il y a deux ans',
-        required: false,
-        category: 'fiscal'
-      },
-      {
-        id: 'attestation_dgfip_sci',
-        label: 'Attestation DGFIP SCI',
-        description: 'Attestation DGFIP de la SCI sur 2 années consécutives',
-        required: false,
-        category: 'fiscal'
-      }
-    ],
-    minRequiredFromCategory: { management: 1, fiscal: 1 }
-  },
-  {
-    id: 'heberge_famille',
-    title: 'Hébergé chez un parent/tiers',
-    description: 'Enfant majeur hébergé chez ses parents ou chez un tiers',
-    icon: '👨‍👩‍👧‍👦',
-    documents: [
-      {
-        id: 'identity',
-        label: 'Pièce d\'identité du demandeur',
-        description: 'Votre carte d\'identité valide ou périmée depuis moins de 5 ans',
+        id: "family-link",
+        label: "Preuve de filiation",
+        description: "Livret de famille ou acte de naissance",
         required: true,
-        category: 'identity'
-      },
-      {
-        id: 'attestation_hebergement',
-        label: 'Attestation d\'hébergement',
-        description: 'Attestation signée par l\'hébergeant, datée de moins de 3 mois',
-        required: true,
-        category: 'hosting'
-      },
-      {
-        id: 'identity_hebergeant',
-        label: 'Pièce d\'identité de l\'hébergeant',
-        description: 'Carte d\'identité ou passeport de la personne qui vous héberge',
-        required: true,
-        category: 'hosting'
-      },
-      {
-        id: 'justificatif_hebergeant',
-        label: 'Justificatif de domicile de l\'hébergeant',
-        description: 'Facture ou justificatif au nom de l\'hébergeant, de moins de 3 mois',
-        required: true,
-        category: 'hosting'
-      },
-      {
-        id: 'lien_parente',
-        label: 'Preuve du lien de parenté',
-        description: 'Livret de famille ou acte de naissance (si hébergement parental uniquement)',
-        required: false,
-        category: 'hosting'
+        category: "hosting",
+        icon: "👨‍👩‍👦"
       }
     ]
   },
   {
-    id: 'foyer',
-    title: 'Hébergé en foyer/structure',
-    description: 'Hébergement dans un foyer ou une structure spécialisée',
-    icon: '🏠',
+    id: "heberge-tiers",
+    title: "Hébergé chez un tiers",
+    description: "Vous êtes hébergé chez une personne autre qu'un parent",
+    icon: "🤝",
     documents: [
       {
-        id: 'identity',
-        label: 'Pièce d\'identité',
-        description: 'Carte d\'identité valide ou périmée depuis moins de 5 ans, ou passeport valide',
+        id: "identity",
+        label: "Pièce d'identité de l'hébergé",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
         required: true,
-        category: 'identity'
+        category: "identity",
+        icon: "🪪"
       },
       {
-        id: 'attestation_structure',
-        label: 'Attestation d\'hébergement de la structure',
-        description: 'Attestation délivrée par le foyer ou la structure d\'hébergement',
+        id: "hosting-attestation",
+        label: "Attestation d'hébergement",
+        description: "Signée par l'hébergeant, datée de moins de 3 mois",
         required: true,
-        category: 'hosting'
+        category: "hosting",
+        icon: "🏠"
       },
       {
-        id: 'justificatif_structure',
-        label: 'Justificatif de domicile de la structure',
-        description: 'Justificatif de domicile au nom de la structure',
+        id: "host-identity",
+        label: "Pièce d'identité de l'hébergeant",
+        description: "CNI ou passeport de la personne qui vous héberge",
         required: true,
-        category: 'hosting'
+        category: "hosting",
+        icon: "🪪"
       },
       {
-        id: 'identity_responsable',
-        label: 'Pièce d\'identité du responsable',
-        description: 'Pièce d\'identité du responsable du foyer (parfois demandée)',
+        id: "host-address-proof",
+        label: "Justificatif de domicile de l'hébergeant",
+        description: "Daté de moins de 3 mois",
+        required: true,
+        category: "hosting",
+        icon: "📄"
+      }
+    ]
+  },
+  {
+    id: "heberge-etablissement",
+    title: "Hébergé en établissement",
+    description: "Vous êtes hébergé en maison de retraite, foyer ou établissement",
+    icon: "🏨",
+    documents: [
+      {
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
+        required: true,
+        category: "identity",
+        icon: "🪪"
+      },
+      {
+        id: "establishment-attestation",
+        label: "Attestation du directeur d'établissement",
+        description: "Datée de moins de 3 mois",
+        required: true,
+        category: "hosting",
+        icon: "🏨"
+      }
+    ]
+  },
+  {
+    id: "autres-attaches",
+    title: "Autres attaches",
+    description: "Marinier, domicile association, ou autres situations particulières",
+    icon: "⚓",
+    documents: [
+      {
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
+        required: true,
+        category: "identity",
+        icon: "🪪"
+      },
+      {
+        id: "specific-document",
+        label: "Document spécifique selon attache",
+        description: "Contrat marinier, attestation d'association domiciliataire...",
+        required: true,
+        category: "special",
+        icon: "📄"
+      }
+    ]
+  },
+  {
+    id: "francais-etranger",
+    title: "Français à l'étranger / Citoyen UE",
+    description: "Vous résidez à l'étranger ou êtes citoyen de l'Union Européenne",
+    icon: "🌍",
+    documents: [
+      {
+        id: "identity",
+        label: "Carte d'identité ou passeport",
+        description: "En cours de validité",
+        required: true,
+        category: "identity",
+        icon: "🪪"
+      },
+      {
+        id: "consular-address",
+        label: "Justificatif d'adresse selon consulat",
+        description: "Document attestant de votre adresse",
         required: false,
-        category: 'hosting'
+        category: "address",
+        icon: "📄"
+      },
+      {
+        id: "honor-declaration",
+        label: "Déclaration sur l'honneur",
+        description: "Selon votre profil spécifique",
+        required: false,
+        category: "special",
+        icon: "📝"
+      }
+    ]
+  },
+  {
+    id: "autre",
+    title: "Autre situation",
+    description: "Votre situation ne correspond pas aux cas précédents",
+    icon: "❓",
+    documents: [
+      {
+        id: "identity",
+        label: "Pièce d'identité",
+        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
+        required: true,
+        category: "identity",
+        icon: "🪪"
       }
     ]
   }

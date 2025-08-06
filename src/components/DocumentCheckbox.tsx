@@ -11,6 +11,7 @@ interface DocumentCheckboxProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
+  icon?: string;
 }
 
 export const DocumentCheckbox = ({

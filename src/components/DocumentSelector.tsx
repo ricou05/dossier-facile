@@ -140,11 +140,11 @@ export const DocumentSelector = ({
 
       {/* Documents obligatoires */}
       {requiredDocs.length > 0 && (
-        <Card className="border-primary/20 bg-primary-light">
+        <Card className="border-destructive/30 bg-destructive/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <AlertCircle className="w-5 h-5" />
-              Documents incontournables
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <span className="text-lg">🔒</span>
+              Documents INCONTOURNABLES
             </CardTitle>
             <CardDescription>
               Ces documents sont obligatoires pour tous les dossiers de ce type
@@ -161,6 +161,7 @@ export const DocumentSelector = ({
                 checked={true}
                 onChange={() => {}}
                 disabled={true}
+                icon={doc.icon}
               />
             ))}
           </CardContent>
@@ -169,10 +170,11 @@ export const DocumentSelector = ({
 
       {/* Documents optionnels par catégorie */}
       {Object.entries(groupedOptionalDocs).map(([category, docs]) => (
-        <Card key={category}>
+        <Card key={category} className="border-primary/20">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="text-lg">📄</span>
                 {getCategoryTitle(category)}
               </CardTitle>
               {getCategoryRequirement(category) && (
@@ -186,6 +188,12 @@ export const DocumentSelector = ({
             </div>
             <CardDescription>
               Sélectionnez les documents que vous possédez
+              {category === "address" && (
+                <div className="mt-2 text-xs text-warning flex items-center gap-1">
+                  <span>⚠️</span>
+                  Les factures de téléphone mobile ne sont pas acceptées seules
+                </div>
+              )}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -197,6 +205,7 @@ export const DocumentSelector = ({
                 description={doc.description}
                 checked={localSelection.has(doc.id)}
                 onChange={(checked) => handleDocumentToggle(doc.id, checked)}
+                icon={doc.icon}
               />
             ))}
           </CardContent>
