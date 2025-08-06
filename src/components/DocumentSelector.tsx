@@ -21,11 +21,21 @@ export const DocumentSelector = ({
   onNext,
   onPrevious
 }: DocumentSelectorProps) => {
-  const [localSelection, setLocalSelection] = useState<Set<string>>(new Set(selectedDocuments));
+  const [localSelection, setLocalSelection] = useState<Set<string>>(() => {
+    const requiredDocIds = registrationType.documents.filter(doc => doc.required).map(doc => doc.id);
+    return new Set([...selectedDocuments, ...requiredDocIds]);
+  });
 
   useEffect(() => {
-    setLocalSelection(new Set(selectedDocuments));
-  }, [selectedDocuments]);
+    const requiredDocIds = registrationType.documents.filter(doc => doc.required).map(doc => doc.id);
+    const newSelection = new Set([...selectedDocuments, ...requiredDocIds]);
+    setLocalSelection(newSelection);
+    
+    // Mettre à jour la sélection parent avec les documents obligatoires
+    const newDocuments = Array.from(newSelection);
+    const isComplete = validateSelection(newSelection);
+    onSelectionChange(newDocuments, isComplete);
+  }, [selectedDocuments, registrationType]);
 
   const handleDocumentToggle = (documentId: string, checked: boolean) => {
     const newSelection = new Set(localSelection);
