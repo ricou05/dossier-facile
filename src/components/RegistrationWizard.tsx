@@ -3,7 +3,9 @@ import { StepIndicator } from "./StepIndicator";
 import { RegistrationTypeSelector } from "./RegistrationTypeSelector";
 import { DocumentSelector } from "./DocumentSelector";
 import { ResultSummary } from "./ResultSummary";
-import { REGISTRATION_TYPES, type UserSelection } from "@/types/registration";
+import { REGISTRATION_TYPES, type UserSelection, type RegistrationType, type Document } from "@/types/registration";
+import { getHostingSubcase, getRequiredDocuments } from "@/types/housing-situations";
+import { HostSubcaseStep } from "./HostSubcaseStep";
 
 const STEPS = ["Situation", "Documents", "Vérification"];
 
@@ -15,20 +17,22 @@ export const RegistrationWizard = () => {
     selectedDocuments: [],
     isComplete: false
   });
+  const [hostInfo, setHostInfo] = useState<{ age: number; isParent: boolean } | null>(null);
 
-  const handleTypeSelection = (typeId: string) => {
-    setUserSelection(prev => ({
-      ...prev,
-      registrationType: typeId,
-      selectedDocuments: [],
-      isComplete: false
-    }));
-    
-    if (!completedSteps.includes(0)) {
-      setCompletedSteps(prev => [...prev, 0]);
-    }
-    setCurrentStep(1);
-  };
+const handleTypeSelection = (typeId: string) => {
+  setUserSelection(prev => ({
+    ...prev,
+    registrationType: typeId,
+    selectedDocuments: [],
+    isComplete: false
+  }));
+  setHostInfo(null);
+  
+  if (!completedSteps.includes(0)) {
+    setCompletedSteps(prev => [...prev, 0]);
+  }
+  setCurrentStep(1);
+};
 
   const handleDocumentSelection = (documents: string[], isComplete: boolean) => {
     setUserSelection(prev => ({
@@ -57,19 +61,57 @@ export const RegistrationWizard = () => {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentStep(0);
-    setCompletedSteps([]);
-    setUserSelection({
-      registrationType: '',
-      selectedDocuments: [],
-      isComplete: false
-    });
+const handleRestart = () => {
+  setCurrentStep(0);
+  setCompletedSteps([]);
+  setUserSelection({
+    registrationType: '',
+    selectedDocuments: [],
+    isComplete: false
+  });
+  setHostInfo(null);
+};
+
+const selectedType = REGISTRATION_TYPES.find(type => type.id === userSelection.registrationType);
+
+// Compute dynamic documents for "Logé chez un ami ou un proche"
+const isHostedCase = selectedType?.id === "hosted_by_friend_or_family";
+let displayedType: RegistrationType | undefined = selectedType;
+if (isHostedCase && hostInfo) {
+  const subcaseKey = getHostingSubcase(hostInfo.age, hostInfo.isParent);
+  const reqs = getRequiredDocuments("hosted_by_friend_or_family", hostInfo.age, hostInfo.isParent);
+  const mapCategory = (id: string): string => {
+    if (id.includes("id")) return "identity";
+    if (id.includes("attestation")) return "hosting";
+    if (id.includes("address") || id.includes("municipality") || id.includes("tax") || id.includes("proof")) return "address";
+    if (id.includes("filiation")) return "hosting";
+    return "hosting";
   };
+  const mapIcon = (id: string): string => {
+    if (id.includes("id")) return "🪪";
+    if (id.includes("attestation")) return "🏠";
+    if (id.includes("address") || id.includes("municipality") || id.includes("proof") || id.includes("tax")) return "📄";
+    if (id.includes("filiation")) return "👨‍👩‍👦";
+    return "📄";
+  };
+  const docs: Document[] = reqs.map((r) => ({
+    id: r.id,
+    label: r.label,
+    description: r.description,
+    required: true,
+    category: mapCategory(r.id),
+    icon: mapIcon(r.id)
+  }));
+  displayedType = {
+    id: selectedType.id,
+    title: `${selectedType.title} — ${subcaseKey === "hosted_by_other" ? "chez une autre personne" : subcaseKey === "adult_child_under_26" ? "enfant < 26 ans chez parent" : "enfant 26+ chez parent"}`,
+    description: selectedType.description,
+    icon: selectedType.icon,
+    documents: docs
+  };
+}
 
-  const selectedType = REGISTRATION_TYPES.find(type => type.id === userSelection.registrationType);
-
-  return (
+return (
     <div className="min-h-screen bg-gradient-to-br from-primary-light to-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -98,15 +140,26 @@ export const RegistrationWizard = () => {
               <RegistrationTypeSelector onSelect={handleTypeSelection} />
             )}
 
-            {currentStep === 1 && selectedType && (
-              <DocumentSelector
-                registrationType={selectedType}
-                selectedDocuments={userSelection.selectedDocuments}
-                onSelectionChange={handleDocumentSelection}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
-              />
-            )}
+{currentStep === 1 && selectedType && (
+  isHostedCase && !hostInfo ? (
+    <HostSubcaseStep
+      onConfirm={(info) => {
+        setHostInfo(info);
+      }}
+      onPrevious={handlePrevious}
+    />
+  ) : (
+    displayedType && (
+      <DocumentSelector
+        registrationType={displayedType}
+        selectedDocuments={userSelection.selectedDocuments}
+        onSelectionChange={handleDocumentSelection}
+        onNext={handleNext}
+        onPrevious={isHostedCase && hostInfo ? () => setHostInfo(null) : handlePrevious}
+      />
+    )
+  )
+)}
 
             {currentStep === 2 && selectedType && (
               <ResultSummary
