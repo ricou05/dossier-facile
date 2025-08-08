@@ -266,76 +266,11 @@ export const REGISTRATION_TYPES: RegistrationType[] = [
     }
   },
   {
-    id: "enfant-heberge",
-    title: "Enfant majeur (-26 ans) hébergé chez ses parents",
-    description: "Vous êtes majeur de moins de 26 ans et hébergé chez vos parents",
-    icon: "👦",
-    documents: [
-      {
-        id: "identity",
-        label: "Pièce d'identité de l'enfant",
-        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
-        required: true,
-        category: "identity",
-        icon: "🪪"
-      },
-      {
-        id: "parent-address-proof",
-        label: "Justificatif de domicile du parent",
-        description: "Daté de moins de 3 mois",
-        required: true,
-        category: "hosting",
-        icon: "📄"
-      },
-      {
-        id: "family-link",
-        label: "Preuve de filiation",
-        description: "Livret de famille ou acte de naissance",
-        required: true,
-        category: "hosting",
-        icon: "👨‍👩‍👦"
-      }
-    ]
-  },
-  {
-    id: "heberge-tiers",
-    title: "Hébergé chez un tiers",
-    description: "Vous êtes hébergé chez une personne autre qu'un parent",
+    id: "hosted_by_friend_or_family",
+    title: "Logé chez un ami ou un proche",
+    description: "3 cas de figure selon votre âge et le lien avec l'hébergeant",
     icon: "🤝",
-    documents: [
-      {
-        id: "identity",
-        label: "Pièce d'identité de l'hébergé",
-        description: "CNI valide ou périmée depuis moins de 5 ans, ou passeport valide",
-        required: true,
-        category: "identity",
-        icon: "🪪"
-      },
-      {
-        id: "hosting-attestation",
-        label: "Attestation d'hébergement",
-        description: "Signée par l'hébergeant, datée de moins de 3 mois",
-        required: true,
-        category: "hosting",
-        icon: "🏠"
-      },
-      {
-        id: "host-identity",
-        label: "Pièce d'identité de l'hébergeant",
-        description: "CNI ou passeport de la personne qui vous héberge",
-        required: true,
-        category: "hosting",
-        icon: "🪪"
-      },
-      {
-        id: "host-address-proof",
-        label: "Justificatif de domicile de l'hébergeant",
-        description: "Daté de moins de 3 mois",
-        required: true,
-        category: "hosting",
-        icon: "📄"
-      }
-    ]
+    documents: []
   },
   {
     id: "heberge-etablissement",
