@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, ArrowLeft, RotateCcw, Download, Printer, AlertTriangle } from "lucide-react";
+import { CheckCircle, ArrowLeft, RotateCcw, Download, Printer, AlertTriangle, ExternalLink } from "lucide-react";
 import { type RegistrationType } from "@/types/registration";
 
 interface ResultSummaryProps {
@@ -165,6 +165,35 @@ export const ResultSummary = ({
               En cas de doute, <strong>contactez votre mairie</strong> avant de vous déplacer
             </li>
           </ul>
+        </CardContent>
+      </Card>
+
+      {/* Inscription en ligne */}
+      <Card className="border-primary/20 bg-primary-light">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <ExternalLink className="w-5 h-5" />
+            Finaliser votre inscription en ligne
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm mb-4">
+            Vous pouvez également compléter votre inscription électorale directement en ligne sur le site officiel :
+          </p>
+          <Button 
+            asChild 
+            className="w-full bg-primary hover:bg-primary/90"
+          >
+            <a 
+              href="https://www.service-public.fr/particuliers/vosdroits/R16396" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              S'inscrire en ligne sur Service-Public.fr
+            </a>
+          </Button>
         </CardContent>
       </Card>
 
