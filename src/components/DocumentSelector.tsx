@@ -22,16 +22,13 @@ export const DocumentSelector = ({
   onPrevious
 }: DocumentSelectorProps) => {
   const [localSelection, setLocalSelection] = useState<Set<string>>(() => {
-    const requiredDocIds = registrationType.documents.filter(doc => doc.required).map(doc => doc.id);
-    return new Set([...selectedDocuments, ...requiredDocIds]);
+    return new Set(selectedDocuments);
   });
 
   useEffect(() => {
-    const requiredDocIds = registrationType.documents.filter(doc => doc.required).map(doc => doc.id);
-    const newSelection = new Set([...selectedDocuments, ...requiredDocIds]);
+    const newSelection = new Set(selectedDocuments);
     setLocalSelection(newSelection);
     
-    // Mettre à jour la sélection parent avec les documents obligatoires
     const newDocuments = Array.from(newSelection);
     const isComplete = validateSelection(newSelection);
     onSelectionChange(newDocuments, isComplete);
@@ -158,9 +155,8 @@ export const DocumentSelector = ({
                 label={doc.label}
                 description={doc.description}
                 required={true}
-                checked={true}
-                onChange={() => {}}
-                disabled={true}
+                checked={localSelection.has(doc.id)}
+                onChange={(checked) => handleDocumentToggle(doc.id, checked)}
                 icon={doc.icon}
               />
             ))}

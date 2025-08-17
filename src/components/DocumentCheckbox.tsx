@@ -37,7 +37,7 @@ export const DocumentCheckbox = ({
         id={id}
         checked={checked}
         onCheckedChange={onChange}
-        disabled={disabled || required}
+        disabled={disabled}
         className="mt-1"
       />
       
