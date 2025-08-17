@@ -45,6 +45,10 @@ export const ResultSummary = ({
       `- Présentez les documents originaux ou des copies certifiées conformes`,
       `- Vérifiez que vos justificatifs sont datés de moins de 3 mois quand requis`,
       `- N'hésitez pas à contacter votre mairie pour toute question`,
+      ``,
+      `INSCRIPTION EN LIGNE :`,
+      `Vous pouvez également finaliser votre inscription directement en ligne :`,
+      `🌐 https://www.service-public.fr/particuliers/vosdroits/R16396`,
     ].join('\n');
 
     const blob = new Blob([checklist], { type: 'text/plain' });
